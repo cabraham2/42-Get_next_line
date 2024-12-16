@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cabraham <cabraham@student.42.fr>          +#+  +:+       +#+        */
+/*   By: clementabraham <clementabraham@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:21:12 by clementabra       #+#    #+#             */
-/*   Updated: 2024/12/16 16:07:49 by cabraham         ###   ########.fr       */
+/*   Updated: 2024/12/16 16:27:49 by clementabra      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,24 +52,6 @@ char	*ft_strdup(const char *src)
 	return (variablenew);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
-{
-	size_t	len1;
-	size_t	len2;
-	char	*result;
-
-	len1 = ft_strlen(s1);
-	len2 = ft_strlen(s2);
-	if (!s1 || !s2)
-		return (NULL);
-	result = (char *)malloc(sizeof(char) * (len1 + len2 + 1));
-	if (!result)
-		return (NULL);
-	ft_strlcpy(result, s1, len1 + 1);
-	ft_strlcat(result, s2, len1 + len2 + 1);
-	return (result);
-}
-
 int	ft_strlen(char const *str)
 {
 	int	i;
@@ -81,30 +63,6 @@ int	ft_strlen(char const *str)
 		str++;
 	}
 	return (i);
-}
-
-unsigned int	ft_strlcat(char *dest, char const *src, unsigned int size)
-{
-	unsigned int	tdest;
-	unsigned int	tsrc;
-	unsigned int	concat;
-
-	tdest = 0;
-	tsrc = 0;
-	concat = 0;
-	while (dest[tdest])
-		tdest++;
-	while (src[tsrc])
-		tsrc++;
-	if (tdest >= size)
-		return (size + tsrc);
-	while (concat < (size - tdest - 1) && src[concat])
-	{
-		dest[tdest + concat] = src[concat];
-		concat++;
-	}
-	dest[tdest + concat] = '\0';
-	return (tdest + tsrc);
 }
 
 char	*ft_substr(char const *s, unsigned int start, size_t len)
@@ -135,23 +93,25 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	return (sub_str);
 }
 
-unsigned int	ft_strlcpy(char *dest, char const *src, unsigned int size)
+char	*ft_strjoin(const char *s1, const char *s2)
 {
-	unsigned int	i;
+	size_t	len1;
+	size_t	len2;
+	char	*joined;
 
-	i = 0;
-	if (size == 0)
-	{
-		return (ft_strlen(src));
-	}
-	while (i < size - 1 && src[i] != '\0')
-	{
-		dest[i] = src[i];
-		i++;
-	}
-	if (i < size)
-	{
-		dest[i] = '\0';
-	}
-	return (ft_strlen(src));
+	len1 = 0;
+	len2 = 0;
+	if (s1)
+		len1 = ft_strlen(s1);
+	if (s2)
+		len2 = ft_strlen(s2);
+	joined = malloc(len1 + len2 + 1);
+	if (!joined)
+		return (NULL);
+	while (s1 && *s1)
+		*joined++ = *s1++;
+	while (s2 && *s2)
+		*joined++ = *s2++;
+	*joined = '\0';
+	return (joined - len1 - len2);
 }
