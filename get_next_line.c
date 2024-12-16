@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: clementabraham <clementabraham@student.    +#+  +:+       +#+        */
+/*   By: cabraham <cabraham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:13:20 by clementabra       #+#    #+#             */
-/*   Updated: 2024/12/11 17:39:56 by clementabra      ###   ########.fr       */
+/*   Updated: 2024/12/16 16:02:14 by cabraham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int		line_finded(char *stash)
 	return (-1);
 }
 
-char	extract_line(char **stash)
+char	*extract_line(char **stash)
 {
 	int	newline_index;
 	char	*line;
@@ -73,7 +73,7 @@ char	extract_line(char **stash)
 	return (line);
 }
 
-char	read_file(int fd, char *save)
+char	*read_file(int fd, char *save)
 {
 	char	*buff;
 	int		bytes;
@@ -90,7 +90,8 @@ char	read_file(int fd, char *save)
 			free(save);
 			return (NULL);
 		}
-		buff[bytes] = add_to_stash(save, buff);
+		buff[bytes] = '\0';
+		save = add_to_stash(save, buff);
 		if (!save)
 			return (free(buff), NULL);
 	}
@@ -98,9 +99,20 @@ char	read_file(int fd, char *save)
 	return (save);
 }
 
-char	get_next_line(int fd)
+char	*get_next_line(int fd)
 {
-	if (fd < 1 || BUFFER_SIZE <= 0)
+	static char	*save = NULL;
+	char		*line;
+
+	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	
+	save = read_file(fd, save);
+	if (!*save)
+	{
+		free(save);
+		save = NULL;
+		return (NULL);
+	}
+	line = extract_line(&save);
+	return (line);
 }
